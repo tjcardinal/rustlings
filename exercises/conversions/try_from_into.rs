@@ -12,8 +12,6 @@ struct Color {
     blue: u8,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
@@ -26,19 +24,38 @@ struct Color {
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {}
+    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red, green, blue) = tuple;
+        Ok(Color{red: red.try_into()?, green: green.try_into()?, blue: blue.try_into()?})
+    }
+
 }
 
 // Array implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {}
+    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [red, green, blue] = arr;
+        match (red.try_into(), green.try_into(), blue.try_into()) {
+            (Ok(red), Ok(green), Ok(blue)) => Ok(Color {red, green, blue}),
+            _ => Err(format!("Invalid input values red {} green {} blue {}", red, green, blue).into()),
+        }
+    }
 }
 
 // Slice implementation
 impl TryFrom<&[i16]> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {}
+    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if let [red, green, blue] = slice {
+            match ((*red).try_into(), (*green).try_into(), (*blue).try_into()) {
+                (Ok(red), Ok(green), Ok(blue)) => Ok(Color {red, green, blue}),
+                _ => Err(format!("Invalid input values red {} green {} blue {}", red, green, blue).into()),
+            }
+        } else {
+            Err(format!("Invalid input length {}", slice.len()).into())
+        }
+    }
 }
 
 fn main() {
