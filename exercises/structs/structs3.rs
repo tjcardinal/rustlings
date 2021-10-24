@@ -16,11 +16,11 @@ impl Package {
         if weight_in_grams <= 0 {
             panic!("Negative weight {} is invalid", weight_in_grams);
         } else {
-            return Package {
+            Package {
                 sender_country,
                 recipient_country,
                 weight_in_grams,
-            };
+            }
         }
     }
 
